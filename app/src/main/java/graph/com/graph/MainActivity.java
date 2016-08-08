@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lineChart = (LineChart) findViewById(R.id.chart1);
+        lineChart.setDescription(" ");
         lineChart.setNoDataTextDescription("Either we are fetching data or you aren't connected to internet");
 
         // enable touch gestures
