@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lineChart = (LineChart) findViewById(R.id.chart1);
-        lineChart.setDescription("");
         lineChart.setNoDataTextDescription("Either we are fetching data or you aren't connected to internet");
 
         // enable touch gestures
@@ -154,9 +153,13 @@ public class MainActivity extends AppCompatActivity {
             // String temp=result;
             //if (!result.equals("")) {
             Log.v("","V");
+
+            //separetes data part and {\"device\":\"thane1\",\"sensor\":\"arduino\",\"data\": in separate tokens
             StringTokenizer stringTokenizer = new StringTokenizer(result, "{");
 
+            //to skip to data tokens
             stringTokenizer.nextToken();
+            //separates each timestamp an value into separate tokens
             StringTokenizer stringTokenizer1 = new StringTokenizer(stringTokenizer.nextToken().toString(), ",");
             StringTokenizer stringTokenizer2 = new StringTokenizer("");
             timestamp = new ArrayList<>();
@@ -193,8 +196,11 @@ public class MainActivity extends AppCompatActivity {
                     j++;
                     if (j < timestamp.size() - 1)
                         return mFormattedStringCache.getFormattedValue(new Date(timestamp.get(j) * 1000), v);
+
+                    //couldn't find a way to stop adding labels to x axis so after all time gap are added to avoid error this is added //needs correction
                     else
                         //return mFormattedStringCache.getFormattedValue(new Date(v), v);
+
                         return "0";
                 }
 
@@ -212,8 +218,6 @@ public class MainActivity extends AppCompatActivity {
                 entries1.add(timestamp.get(i).toString());
             }
             ArrayList<Entry> values1 = new ArrayList<Entry>();
-            long now = System.currentTimeMillis();
-            long hourMillis = 3600000L;
             float gap=timestamp.get(1)-timestamp.get(0);
             //float to = now + (100 / 2) * hourMillis;
             int i=2;
@@ -221,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
                 float y = values.get(i-2);
                 values1.add(new Entry(x, y)); // entry as per timegap
-                gap=timestamp.get(i)-timestamp.get(i-1);
+                gap=timestamp.get(i)-timestamp.get(i-1); //gap is changed s per time gap of timestamp
                 i++;
             }
             LineDataSet lineDataSet = new LineDataSet(values1, "Project");
@@ -236,8 +240,10 @@ public class MainActivity extends AppCompatActivity {
         public void setDate(){
             for(int i=0;i<timestamp.size();i++){
                 DateFormat sdf = new SimpleDateFormat("HH:mm");
-                DateFormat sdf1 = new SimpleDateFormat("k");
                 Date netDate = new Date(timestamp.get(i)*1000);
+                //used to generate hours in a day
+                DateFormat sdf1 = new SimpleDateFormat("k");
+
                 int k=Integer.parseInt(sdf1.format(netDate).toString());
                 if(k>0&&k<=11)
                     value.add(sdf.format(netDate).toString()+"AM");
